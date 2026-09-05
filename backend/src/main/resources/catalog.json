@@ -1,0 +1,470 @@
+{
+  "slug": "voc",
+  "pkg": "voc",
+  "name": "知华客户之声管理",
+  "subtitle": "问卷投放、NPS/满意度统计、客户回访与改进行动",
+  "accent": "#32716b",
+  "modules": [
+    {
+      "key": "customers",
+      "label": "客户名册",
+      "description": "用于受邀反馈和回访追踪；不含外部营销发送",
+      "initial": "ACTIVE",
+      "editable": true,
+      "creatable": true,
+      "fields": [
+        {
+          "key": "name",
+          "label": "客户名称",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "contact",
+          "label": "回访联系方式",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "consent",
+          "label": "反馈邀请许可",
+          "type": "select",
+          "required": true,
+          "ref": null,
+          "options": [
+            "YES",
+            "NO"
+          ],
+          "min": null,
+          "max": null
+        }
+      ],
+      "actions": []
+    },
+    {
+      "key": "surveys",
+      "label": "满意度调查",
+      "description": "发布调查、有效期、低分阈值与回访时限",
+      "initial": "DRAFT",
+      "editable": true,
+      "creatable": true,
+      "fields": [
+        {
+          "key": "name",
+          "label": "调查主题",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "start",
+          "label": "开始日期",
+          "type": "date",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "end",
+          "label": "截止日期",
+          "type": "date",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "lowScore",
+          "label": "触发回访的 NPS 分数上限",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "10"
+        },
+        {
+          "key": "slaDays",
+          "label": "回访时限天数",
+          "type": "integer",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "1",
+          "max": "1000000"
+        }
+      ],
+      "actions": [
+        {
+          "key": "publish",
+          "label": "审批发布",
+          "from": [
+            "DRAFT"
+          ],
+          "to": "ACTIVE",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": []
+        },
+        {
+          "key": "close",
+          "label": "结束调查",
+          "from": [
+            "ACTIVE"
+          ],
+          "to": "CLOSED",
+          "role": "REVIEWER",
+          "separate": false,
+          "fields": []
+        }
+      ]
+    },
+    {
+      "key": "responses",
+      "label": "客户反馈",
+      "description": "同客户同问卷单次反馈，提交后锁定",
+      "initial": "DRAFT",
+      "editable": true,
+      "creatable": true,
+      "fields": [
+        {
+          "key": "survey",
+          "label": "问卷",
+          "type": "ref",
+          "required": true,
+          "ref": "surveys",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "customer",
+          "label": "客户",
+          "type": "ref",
+          "required": true,
+          "ref": "customers",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "nps",
+          "label": "推荐意愿 0—10",
+          "type": "integer",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "1000000"
+        },
+        {
+          "key": "csat",
+          "label": "满意程度 1—5",
+          "type": "integer",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "1",
+          "max": "1000000"
+        },
+        {
+          "key": "comment",
+          "label": "反馈内容",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        }
+      ],
+      "actions": [
+        {
+          "key": "submit",
+          "label": "确认录入",
+          "from": [
+            "DRAFT"
+          ],
+          "to": "SUBMITTED",
+          "role": "OPERATOR",
+          "separate": false,
+          "fields": []
+        },
+        {
+          "key": "withdraw",
+          "label": "撤回并停止统计",
+          "from": [
+            "SUBMITTED"
+          ],
+          "to": "WITHDRAWN",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": [
+            {
+              "key": "reason",
+              "label": "撤回依据",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "cases",
+      "label": "回访工单",
+      "description": "低分反馈自动转回访，分派、处理与复核",
+      "initial": "OPEN",
+      "editable": false,
+      "creatable": false,
+      "fields": [
+        {
+          "key": "response",
+          "label": "反馈",
+          "type": "ref",
+          "required": true,
+          "ref": "responses",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "customer",
+          "label": "客户",
+          "type": "ref",
+          "required": true,
+          "ref": "customers",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "dueDate",
+          "label": "处理期限",
+          "type": "date",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        }
+      ],
+      "actions": [
+        {
+          "key": "assign",
+          "label": "分派回访",
+          "from": [
+            "OPEN"
+          ],
+          "to": "ASSIGNED",
+          "role": "REVIEWER",
+          "separate": false,
+          "fields": [
+            {
+              "key": "owner",
+              "label": "回访负责人",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        },
+        {
+          "key": "resolve",
+          "label": "登记回访结果",
+          "from": [
+            "ASSIGNED"
+          ],
+          "to": "RESOLVED",
+          "role": "OPERATOR",
+          "separate": false,
+          "fields": [
+            {
+              "key": "resolution",
+              "label": "解决措施与回访记录",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        },
+        {
+          "key": "close",
+          "label": "复核结案",
+          "from": [
+            "RESOLVED"
+          ],
+          "to": "CLOSED",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": [
+            {
+              "key": "verification",
+              "label": "复核依据",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        },
+        {
+          "key": "reopen",
+          "label": "重新处理",
+          "from": [
+            "RESOLVED",
+            "CLOSED"
+          ],
+          "to": "ASSIGNED",
+          "role": "REVIEWER",
+          "separate": false,
+          "fields": [
+            {
+              "key": "reason",
+              "label": "重开原因",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "improvements",
+      "label": "改进行动",
+      "description": "关联回访根因、责任人与效果验证",
+      "initial": "DRAFT",
+      "editable": true,
+      "creatable": true,
+      "fields": [
+        {
+          "key": "case",
+          "label": "回访工单",
+          "type": "ref",
+          "required": true,
+          "ref": "cases",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "rootCause",
+          "label": "根因分析",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "owner",
+          "label": "改善责任人",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "dueDate",
+          "label": "计划完成日",
+          "type": "date",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        }
+      ],
+      "actions": [
+        {
+          "key": "start",
+          "label": "落实改进",
+          "from": [
+            "DRAFT"
+          ],
+          "to": "IN_PROGRESS",
+          "role": "OPERATOR",
+          "separate": false,
+          "fields": []
+        },
+        {
+          "key": "complete",
+          "label": "提交改善结果",
+          "from": [
+            "IN_PROGRESS"
+          ],
+          "to": "REVIEW",
+          "role": "OPERATOR",
+          "separate": false,
+          "fields": [
+            {
+              "key": "result",
+              "label": "措施与效果",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        },
+        {
+          "key": "verify",
+          "label": "效果验收",
+          "from": [
+            "REVIEW"
+          ],
+          "to": "CLOSED",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": [
+            {
+              "key": "evidence",
+              "label": "验收证据",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

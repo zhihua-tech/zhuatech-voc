@@ -1,0 +1,219 @@
+[
+  {
+    "op": "create",
+    "as": "customer",
+    "module": "customers",
+    "data": {
+      "name": "上海示例客户",
+      "contact": "客服测试联系渠道",
+      "consent": "YES"
+    }
+  },
+  {
+    "op": "create",
+    "as": "customer2",
+    "module": "customers",
+    "data": {
+      "name": "杭州示例客户",
+      "contact": "客服测试联系渠道",
+      "consent": "YES"
+    }
+  },
+  {
+    "op": "create",
+    "as": "survey",
+    "module": "surveys",
+    "data": {
+      "name": "服务交付满意度回访",
+      "start": "$today-2",
+      "end": "$today+30",
+      "lowScore": 6,
+      "slaDays": 3
+    }
+  },
+  {
+    "op": "action",
+    "target": "survey",
+    "action": "publish",
+    "data": {},
+    "role": "reviewer"
+  },
+  {
+    "op": "create",
+    "as": "feedback",
+    "module": "responses",
+    "data": {
+      "survey": "$survey.id",
+      "customer": "$customer.id",
+      "nps": 4,
+      "csat": 2,
+      "comment": "工单处理时间偏长，希望改善"
+    }
+  },
+  {
+    "op": "action",
+    "target": "feedback",
+    "action": "submit",
+    "data": {}
+  },
+  {
+    "op": "count",
+    "module": "cases",
+    "count": 1,
+    "where": {}
+  },
+  {
+    "op": "create",
+    "as": "duplicate",
+    "module": "responses",
+    "data": {
+      "survey": "$survey.id",
+      "customer": "$customer.id",
+      "nps": 8,
+      "csat": 4,
+      "comment": "重复反馈测试"
+    },
+    "error": 409
+  },
+  {
+    "op": "create",
+    "as": "feedback2",
+    "module": "responses",
+    "data": {
+      "survey": "$survey.id",
+      "customer": "$customer2.id",
+      "nps": 9,
+      "csat": 5,
+      "comment": "现场支持及时，问题已解决"
+    }
+  },
+  {
+    "op": "action",
+    "target": "feedback2",
+    "action": "submit",
+    "data": {}
+  },
+  {
+    "op": "count",
+    "module": "cases",
+    "count": 1,
+    "where": {}
+  },
+  {
+    "op": "metric",
+    "expect": {
+      "NPS": 0,
+      "平均满意度": 3.5,
+      "有效反馈数": 2
+    }
+  },
+  {
+    "op": "find",
+    "as": "case",
+    "module": "cases",
+    "where": {
+      "data.response": "$feedback.id"
+    }
+  },
+  {
+    "op": "action",
+    "target": "case",
+    "action": "assign",
+    "data": {
+      "owner": "客户成功团队"
+    },
+    "role": "reviewer"
+  },
+  {
+    "op": "create",
+    "as": "improvement",
+    "module": "improvements",
+    "data": {
+      "case": "$case.id",
+      "rootCause": "一线与研发升级路径不明确",
+      "owner": "服务运营负责人",
+      "dueDate": "$today+30"
+    }
+  },
+  {
+    "op": "action",
+    "target": "improvement",
+    "action": "start",
+    "data": {}
+  },
+  {
+    "op": "action",
+    "target": "case",
+    "action": "resolve",
+    "data": {
+      "resolution": "已与客户沟通，并建立加急升级路径"
+    }
+  },
+  {
+    "op": "action",
+    "target": "case",
+    "action": "close",
+    "data": {
+      "verification": "尝试提前关闭"
+    },
+    "role": "reviewer",
+    "error": 409
+  },
+  {
+    "op": "action",
+    "target": "improvement",
+    "action": "complete",
+    "data": {
+      "result": "新增升级值班机制，验证两周响应时效改善"
+    }
+  },
+  {
+    "op": "action",
+    "target": "improvement",
+    "action": "verify",
+    "data": {
+      "evidence": "抽样工单响应记录核验通过"
+    },
+    "role": "reviewer"
+  },
+  {
+    "op": "action",
+    "target": "case",
+    "action": "close",
+    "data": {
+      "verification": "回访客户确认问题已解决"
+    },
+    "role": "reviewer"
+  },
+  {
+    "op": "check",
+    "target": "case",
+    "expect": {
+      "state": "CLOSED"
+    }
+  },
+  {
+    "op": "action",
+    "target": "feedback",
+    "action": "withdraw",
+    "data": {
+      "reason": "客户要求撤回本次评价"
+    },
+    "role": "reviewer"
+  },
+  {
+    "op": "metric",
+    "expect": {
+      "NPS": 100,
+      "平均满意度": 5,
+      "有效反馈数": 1
+    }
+  },
+  {
+    "op": "action",
+    "target": "survey",
+    "action": "close",
+    "data": {},
+    "role": "reviewer"
+  }
+]
