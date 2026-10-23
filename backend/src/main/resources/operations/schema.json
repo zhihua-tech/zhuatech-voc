@@ -1,0 +1,88 @@
+{
+  "slug": "voc",
+  "title": "NPS分类一致性与小样本提示",
+  "fields": [
+    {
+      "key": "id",
+      "label": "记录编号",
+      "type": "ID"
+    },
+    {
+      "key": "invited",
+      "label": "邀请人数",
+      "type": "NUMBER",
+      "scale": 0,
+      "min": "0",
+      "max": "1000000"
+    },
+    {
+      "key": "promoters",
+      "label": "推荐者数",
+      "type": "NUMBER",
+      "scale": 0,
+      "min": "0",
+      "max": "1000000"
+    },
+    {
+      "key": "passives",
+      "label": "中立者数",
+      "type": "NUMBER",
+      "scale": 0,
+      "min": "0",
+      "max": "1000000"
+    },
+    {
+      "key": "detractors",
+      "label": "贬损者数",
+      "type": "NUMBER",
+      "scale": 0,
+      "min": "0",
+      "max": "1000000"
+    },
+    {
+      "key": "minimumResponses",
+      "label": "最少响应数",
+      "type": "NUMBER",
+      "scale": 0,
+      "min": "1",
+      "max": "1000000"
+    }
+  ],
+  "columns": [
+    {
+      "key": "responses",
+      "label": "响应数"
+    },
+    {
+      "key": "responsePct",
+      "label": "响应率%"
+    },
+    {
+      "key": "nps",
+      "label": "NPS"
+    },
+    {
+      "key": "responseGap",
+      "label": "最少响应缺口"
+    }
+  ],
+  "description": "用互斥的推荐者、中立者和贬损者数量计算NPS及响应率，样本量不足时明确标记，不做情绪模型推断。",
+  "owner": "上海如静知华信息科技有限公司",
+  "website": "https://www.zhuatech.cn/",
+  "authorization": "商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。",
+  "version": 1,
+  "notes": "输入均须为已获授权的同口径数据。金额固定人民币元；比例为百分数。核算结果只用于复核，未审批、未写库、未发起外部调用，也未触发付款、签名、资料销毁或设备控制。建议不构成法律、安全、会计或碳核证结论。",
+  "sample": {
+    "asOf": "2026-10-23",
+    "records": [
+      {
+        "id": "ITEM-001",
+        "invited": "200",
+        "promoters": "60",
+        "passives": "20",
+        "detractors": "20",
+        "minimumResponses": "50"
+      }
+    ]
+  }
+}

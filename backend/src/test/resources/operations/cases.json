@@ -1,0 +1,54 @@
+[
+  {
+    "patch": {},
+    "expected": {
+      "decision": "PASS",
+      "responses": "#100",
+      "responsePct": "#50",
+      "nps": "#40"
+    },
+    "error": false
+  },
+  {
+    "patch": {
+      "promoters": "10",
+      "passives": "10",
+      "detractors": "10"
+    },
+    "expected": {
+      "decision": "REVIEW",
+      "nps": "#0"
+    },
+    "error": false
+  },
+  {
+    "patch": {
+      "promoters": "0",
+      "passives": "0",
+      "detractors": "0"
+    },
+    "expected": {
+      "decision": "REVIEW",
+      "nps": "N/A"
+    },
+    "error": false
+  },
+  {
+    "patch": {
+      "invited": "99"
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "patch": {
+      "promoters": "0",
+      "passives": "0",
+      "detractors": "100"
+    },
+    "expected": {
+      "nps": "#-100"
+    },
+    "error": false
+  }
+]
